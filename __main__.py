@@ -29,14 +29,6 @@ REQUIRED = [
         }
     },
     {
-        'keys': ['-g', '--gtf'],
-        'properties': {
-            'type': str,
-            'required': True,
-            'help': 'path to the general transfer format gtf file',
-        }
-    },
-    {
         'keys': ['-1', '--fq1'],
         'properties': {
             'type': str,
@@ -50,6 +42,14 @@ REQUIRED = [
             'type': str,
             'required': True,
             'help': 'path to the read 2 fastq file',
+        }
+    },
+    {
+        'keys': ['-g', '--gtf'],
+        'properties': {
+            'type': str,
+            'required': True,
+            'help': 'path to the general transfer format gtf file',
         }
     },
 ]
@@ -190,24 +190,23 @@ class EntryPoint:
     def run(self):
         args = self.parser.parse_args()
         print(f'Start running ChIP-seq pipeline version {__VERSION__}\n', flush=True)
-        # chip_seq_pipeline.Main().main(
-        #     ref_fa=args.ref_fa,
-        #     gtf=args.gtf,
-        #     fq1=args.fq1,
-        #     fq2=args.fq2,
-        #     adapter=args.adapter,
-        #     base_quality_cutoff=args.base_quality_cutoff,
-        #     min_read_length=args.min_read_length,
-        #     max_read_length=args.max_read_length,
-        #     read_aligner=args.read_aligner,
-        #     bowtie2_mode=args.bowtie2_mode,
-        #     discard_bam=args.discard_bam,
-        #     min_count_mapq=args.min_count_mapq,
-        #     nonunique_count=args.nonunique_count,
-        #     stranded_count=args.stranded_count,
-        #     outdir=args.outdir,
-        #     threads=args.threads,
-        #     debug=args.debug)
+        chip_seq_pipeline.main(
+            ref_fa=args.ref_fa,
+            fq1=args.fq1,
+            fq2=args.fq2,
+            gtf=args.gtf,
+
+            base_quality_cutoff=args.base_quality_cutoff,
+            min_read_length=args.min_read_length,
+            max_read_length=args.max_read_length,
+
+            read_aligner=args.read_aligner,
+            bowtie2_mode=args.bowtie2_mode,
+            discard_bam=args.discard_bam,
+
+            outdir=args.outdir,
+            threads=args.threads,
+            debug=args.debug)
 
 
 if __name__ == '__main__':
