@@ -10,50 +10,30 @@ class TestMapping(TestCase):
     def tearDown(self):
         self.tear_down()
 
-    def test_bwa_paired_end(self):
-        actual = Mapping(self.settings).main(
+    def test_bwa(self):
+        treatment_bam, control_bam = Mapping(self.settings).main(
             ref_fa=f'{self.indir}/chr22.fa',
-            fq1=f'{self.indir}/tumor.1.fq.gz',
-            fq2=f'{self.indir}/tumor.2.fq.gz',
+            treatment_fq1=f'{self.indir}/small_ATO_0_KEAP1_S4_R1_001.fastq.gz',
+            treatment_fq2=f'{self.indir}/small_ATO_0_KEAP1_S4_R2_001.fastq.gz',
+            control_fq1=f'{self.indir}/small_ATO_0_Input_S1_R1_001.fastq.gz',
+            control_fq2=f'{self.indir}/small_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bwa',
             bowtie2_mode='sensitive',
             discard_bam=True
         )
-        expected = f'{self.workdir}/sorted.bam'
-        self.assertFileExists(expected, actual)
+        self.assertFileExists(f'{self.workdir}/treatment-sorted.bam', treatment_bam)
+        self.assertFileExists(f'{self.workdir}/control-sorted.bam', control_bam)
 
-    def test_bwa_single_end(self):
-        actual = Mapping(self.settings).main(
+    def test_bowtie2(self):
+        treatment_bam, control_bam = Mapping(self.settings).main(
             ref_fa=f'{self.indir}/chr22.fa',
-            fq1=f'{self.indir}/tumor.1.fq.gz',
-            fq2=None,
-            read_aligner='bwa',
-            bowtie2_mode='sensitive',
-            discard_bam=True
-        )
-        expected = f'{self.workdir}/sorted.bam'
-        self.assertFileExists(expected, actual)
-
-    def test_bowtie2_paired_end(self):
-        actual = Mapping(self.settings).main(
-            ref_fa=f'{self.indir}/chr22.fa',
-            fq1=f'{self.indir}/tumor.1.fq.gz',
-            fq2=f'{self.indir}/tumor.2.fq.gz',
+            treatment_fq1=f'{self.indir}/small_ATO_0_KEAP1_S4_R1_001.fastq.gz',
+            treatment_fq2=f'{self.indir}/small_ATO_0_KEAP1_S4_R2_001.fastq.gz',
+            control_fq1=None,
+            control_fq2=None,
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
             discard_bam=False
         )
-        expected = f'{self.outdir}/sorted.bam'
-        self.assertFileExists(expected, actual)
-
-    def test_bowtie2_single_end(self):
-        actual = Mapping(self.settings).main(
-            ref_fa=f'{self.indir}/chr22.fa',
-            fq1=f'{self.indir}/tumor.1.fq.gz',
-            fq2=None,
-            read_aligner='bowtie2',
-            bowtie2_mode='sensitive',
-            discard_bam=False
-        )
-        expected = f'{self.outdir}/sorted.bam'
-        self.assertFileExists(expected, actual)
+        self.assertFileExists(f'{self.outdir}/treatment-sorted.bam', treatment_bam)
+        self.assertIsNone(control_bam)

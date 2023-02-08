@@ -1,3 +1,4 @@
+from typing import Optional
 from .mapping import Mapping
 from .trimming import Trimming
 from .template import Processor
@@ -9,8 +10,8 @@ class ChipSeqPipeline(Processor):
     ref_fa: str
     treatment_fq1: str
     treatment_fq2: str
-    control_fq1: str
-    control_fq2: str
+    control_fq1: Optional[str]
+    control_fq2: Optional[str]
     gtf: str
 
     base_quality_cutoff: int
@@ -24,7 +25,7 @@ class ChipSeqPipeline(Processor):
     peak_caller: str
 
     treatment_bam: str
-    control_bam: str
+    control_bam: Optional[str]
 
     def main(
             self,
@@ -73,24 +74,17 @@ class ChipSeqPipeline(Processor):
             treatment_fq2=self.treatment_fq2,
             control_fq1=self.control_fq1,
             control_fq2=self.control_fq2,
-
             base_quality_cutoff=self.base_quality_cutoff,
             min_read_length=self.min_read_length,
             max_read_length=self.max_read_length)
 
     def mapping(self):
-        self.treatment_fq1, self.treatment_fq2 = Mapping(self.settings).main(
+        self.treatment_bam, self.control_bam = Mapping(self.settings).main(
             ref_fa=self.ref_fa,
-            fq1=self.treatment_fq1,
-            fq2=self.treatment_fq2,
-            read_aligner=self.read_aligner,
-            bowtie2_mode=self.bowtie2_mode,
-            discard_bam=self.discard_bam)
-
-        self.control_fq1, self.control_fq2 = Mapping(self.settings).main(
-            ref_fa=self.ref_fa,
-            fq1=self.control_fq1,
-            fq2=self.control_fq2,
+            treatment_fq1=self.treatment_fq1,
+            treatment_fq2=self.treatment_fq2,
+            control_fq1=self.control_fq1,
+            control_fq2=self.control_fq2,
             read_aligner=self.read_aligner,
             bowtie2_mode=self.bowtie2_mode,
             discard_bam=self.discard_bam)
