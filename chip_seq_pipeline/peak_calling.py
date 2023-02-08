@@ -3,10 +3,16 @@ from .template import Processor
 
 class PeakCalling(Processor):
 
-    bam: str
+    treatment_bam: str
+    control_bam: str
+    peak_caller: str
 
     def main(
             self,
-            bam: str):
+            treatment_bam: str,
+            control_bam: str,
+            peak_caller: str):
 
-        self.bam = bam
+        self.treatment_bam = treatment_bam
+        self.control_bam = control_bam
+        self.peak_caller = peak_caller

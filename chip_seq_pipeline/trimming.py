@@ -4,31 +4,66 @@ from typing import Tuple, Optional
 from .template import Processor
 
 
-class TrimGaloreBase(Processor):
+class Trimming(Processor):
 
-    MAX_N = 0
-    CUTADAPT_TOTAL_CORES = 2
-    # According to the help message of trim_galore, 2 cores for cutadapt -> actually up to 9 cores
+    treatment_fq1: str
+    treatment_fq2: str
+    control_fq1: Optional[str]
+    control_fq2: Optional[str]
 
     base_quality_cutoff: int
     min_read_length: int
     max_read_length: int
 
-    def move_fastqc_report(self):
-        dstdir = f'{self.outdir}/fastqc'
-        os.makedirs(dstdir, exist_ok=True)
-        for suffix in [
-            'fastqc.html',
-            'fastqc.zip',
-            'trimming_report.txt'
-        ]:
-            self.call(f'mv {self.workdir}/*{suffix} {dstdir}/')
+    def main(
+            self,
+            treatment_fq1: str,
+            treatment_fq2: str,
+            control_fq1: str,
+            control_fq2: str,
+
+            base_quality_cutoff: int,
+            min_read_length: int,
+            max_read_length: int) -> Tuple[str, str, str, str]:
+
+        self.treatment_fq1 = treatment_fq1
+        self.treatment_fq2 = treatment_fq2
+        self.control_fq1 = control_fq1
+        self.control_fq2 = control_fq2
+
+        self.base_quality_cutoff = base_quality_cutoff
+        self.min_read_length = min_read_length
+        self.max_read_length = max_read_length
+
+        self.treatment_fq1, self.treatment_fq2 = TrimGalore(self.settings).main(
+            fq1=self.treatment_fq1,
+            fq2=self.treatment_fq2,
+            base_quality_cutoff=self.base_quality_cutoff,
+            min_read_length=self.min_read_length,
+            max_read_length=self.max_read_length)
+
+        if self.control_fq1 is not None:
+            self.control_fq1, self.control_fq2 = TrimGalore(self.settings).main(
+                fq1=self.control_fq1,
+                fq2=self.control_fq2,
+                base_quality_cutoff=self.base_quality_cutoff,
+                min_read_length=self.min_read_length,
+                max_read_length=self.max_read_length)
+
+        return self.treatment_fq1, self.treatment_fq2, self.control_fq1, self.control_fq2
 
 
-class TrimGalorePairedEnd(TrimGaloreBase):
+class TrimGalore(Processor):
+
+    MAX_N = 0
+    CUTADAPT_TOTAL_CORES = 2
+    # According to the help message of trim_galore, 2 cores for cutadapt -> actually up to 9 cores
 
     fq1: str
-    fq2: Optional[str]
+    fq2: str
+    base_quality_cutoff: int
+    min_read_length: int
+    max_read_length: int
 
     out_fq1: str
     out_fq2: str
@@ -82,56 +117,15 @@ class TrimGalorePairedEnd(TrimGaloreBase):
         self.out_fq1 = f'{self.workdir}/{get_fq_filename(self.fq1)}_val_1.fq.gz'
         self.out_fq2 = f'{self.workdir}/{get_fq_filename(self.fq2)}_val_2.fq.gz'
 
-
-class TrimGaloreSingleEnd(TrimGaloreBase):
-
-    fq: str
-
-    out_fq: str
-
-    def main(
-            self,
-            fq: str,
-            base_quality_cutoff: int,
-            min_read_length: int,
-            max_read_length: int) -> str:
-
-        self.fq = fq
-        self.base_quality_cutoff = base_quality_cutoff
-        self.min_read_length = min_read_length
-        self.max_read_length = max_read_length
-
-        self.execute()
-        self.set_out_fq()
-        self.move_fastqc_report()
-
-        return self.out_fq
-
-    def execute(self):
-        args = [
-            'trim_galore',
-            f'--quality {self.base_quality_cutoff}',
-            '--phred33',
-            f'--cores {self.CUTADAPT_TOTAL_CORES}',
-            f'--fastqc_args "--threads {self.threads}"',
-            '--illumina',
-            f'--length {self.min_read_length}',
-            f'--max_n {self.MAX_N}',
-            '--trim-n',
-            '--gzip',
-            f'--output_dir {self.workdir}',
-        ]
-
-        log = f'{self.outdir}/trim_galore.log'
-        args += [
-            self.fq,
-            f'1>> {log} 2>> {log}'
-        ]
-
-        self.call(self.CMD_LINEBREAK.join(args))
-
-    def set_out_fq(self):
-        self.out_fq = f'{self.workdir}/{get_fq_filename(self.fq)}_trimmed.fq.gz'
+    def move_fastqc_report(self):
+        dstdir = f'{self.outdir}/fastqc'
+        os.makedirs(dstdir, exist_ok=True)
+        for suffix in [
+            'fastqc.html',
+            'fastqc.zip',
+            'trimming_report.txt'
+        ]:
+            self.call(f'mv {self.workdir}/*{suffix} {dstdir}/')
 
 
 def get_fq_filename(f: str) -> str:

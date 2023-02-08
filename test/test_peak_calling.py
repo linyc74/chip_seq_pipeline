@@ -12,5 +12,7 @@ class TestPeakCalling(TestCase):
 
     def test_main(self):
         PeakCalling(self.settings).main(
-            bam=f'{self.indir}/sorted.bam'
+            treatment_bam=f'{self.indir}/treatment.bam',
+            control_bam=f'{self.indir}/control.bam',
+            peak_caller='macs'
         )
