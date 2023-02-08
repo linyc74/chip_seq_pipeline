@@ -29,19 +29,35 @@ REQUIRED = [
         }
     },
     {
-        'keys': ['-1', '--fq1'],
+        'keys': ['-1', '--treatment-fq1'],
         'properties': {
             'type': str,
             'required': True,
-            'help': 'path to the read 1 fastq file',
+            'help': 'path to the treatment read 1 fastq(.gz) file',
         }
     },
     {
-        'keys': ['-2', '--fq2'],
+        'keys': ['-2', '--treatment-fq2'],
         'properties': {
             'type': str,
             'required': True,
-            'help': 'path to the read 2 fastq file',
+            'help': 'path to the treatment read 2 fastq(.gz) file',
+        }
+    },
+    {
+        'keys': ['-3', '--control-fq1'],
+        'properties': {
+            'type': str,
+            'required': True,
+            'help': 'path to the control read 1 fastq(.gz) file',
+        }
+    },
+    {
+        'keys': ['-4', '--control-fq2'],
+        'properties': {
+            'type': str,
+            'required': True,
+            'help': 'path to the control read 2 fastq(.gz) file',
         }
     },
     {

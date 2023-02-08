@@ -4,50 +4,6 @@ from typing import Tuple, Optional
 from .template import Processor
 
 
-class Trimming(Processor):
-
-    LENGTH = 20
-    MAX_N = 0
-    CUTADAPT_TOTAL_CORES = 2
-    # According to the help message of trim_galore, 2 cores for cutadapt -> actually up to 9 cores
-
-    fq1: str
-    fq2: Optional[str]
-    base_quality_cutoff: int
-    min_read_length: int
-    max_read_length: int
-
-    def main(
-            self,
-            fq1: str,
-            fq2: Optional[str],
-            base_quality_cutoff: int,
-            min_read_length: int,
-            max_read_length: int) -> Tuple[str, str]:
-
-        self.fq1 = fq1
-        self.fq2 = fq2
-        self.base_quality_cutoff = base_quality_cutoff
-        self.min_read_length = min_read_length
-        self.max_read_length = max_read_length
-
-        if self.fq2 is None:
-            self.fq1 = TrimGaloreSingleEnd(self.settings).main(
-                fq=self.fq1,
-                base_quality_cutoff=self.base_quality_cutoff,
-                min_read_length=min_read_length,
-                max_read_length=max_read_length)
-        else:
-            self.fq1, self.fq2 = TrimGalorePairedEnd(self.settings).main(
-                fq1=self.fq1,
-                fq2=self.fq2,
-                base_quality_cutoff=self.base_quality_cutoff,
-                min_read_length=min_read_length,
-                max_read_length=max_read_length)
-
-        return self.fq1, self.fq2
-
-
 class TrimGaloreBase(Processor):
 
     MAX_N = 0

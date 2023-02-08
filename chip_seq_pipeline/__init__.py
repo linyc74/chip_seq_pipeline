@@ -23,7 +23,7 @@ def main(
         debug: bool):
 
     settings = Settings(
-        workdir=get_temp_path(prefix='./somatic_pipeline_workdir_'),
+        workdir=get_temp_path(prefix='./chip_seq_workdir_'),
         outdir=outdir,
         threads=threads,
         debug=debug,
@@ -34,8 +34,8 @@ def main(
 
     ChipSeqPipeline(settings=settings).main(
         ref_fa=ref_fa,
-        fq1=fq1,
-        fq2=fq2,
+        treatment_fq1=fq1,
+        treatment_fq2=fq2,
         gtf=gtf,
 
         base_quality_cutoff=base_quality_cutoff,

@@ -13,8 +13,10 @@ class TestChipSeqPipeline(TestCase):
     def test_main(self):
         ChipSeqPipeline(self.settings).main(
             ref_fa=f'{self.indir}/',
-            fq1=f'{self.indir}/',
-            fq2=f'{self.indir}/',
+            treatment_fq1=f'{self.indir}/',
+            treatment_fq2=f'{self.indir}/',
+            control_fq1=f'{self.indir}/',
+            control_fq2=f'{self.indir}/',
             gtf=f'{self.indir}/',
 
             base_quality_cutoff=20,

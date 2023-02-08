@@ -1,4 +1,4 @@
-from chip_seq_pipeline.trimming import Trimming
+from chip_seq_pipeline.trimming import TrimGalorePairedEnd, TrimGaloreSingleEnd
 from .setup import TestCase
 
 
@@ -11,7 +11,7 @@ class TestTrimming(TestCase):
         self.tear_down()
 
     def test_paired_end(self):
-        trimmed_fq1, trimmed_fq2 = Trimming(self.settings).main(
+        trimmed_fq1, trimmed_fq2 = TrimGalorePairedEnd(self.settings).main(
             fq1=f'{self.indir}/tumor.1.fq.gz',
             fq2=f'{self.indir}/tumor.2.fq.gz',
             base_quality_cutoff=20,
@@ -25,12 +25,10 @@ class TestTrimming(TestCase):
             self.assertFileExists(expected, actual)
 
     def test_single_end(self):
-        trimmed_fq1, trimmed_fq2 = Trimming(self.settings).main(
-            fq1=f'{self.indir}/tumor.1.fq.gz',
-            fq2=None,
+        trimmed_fq = TrimGaloreSingleEnd(self.settings).main(
+            fq=f'{self.indir}/tumor.1.fq.gz',
             base_quality_cutoff=20,
             min_read_length=20,
             max_read_length=-1,
         )
-        self.assertFileExists(f'{self.workdir}/tumor.1_trimmed.fq.gz', trimmed_fq1)
-        self.assertIsNone(trimmed_fq2)
+        self.assertFileExists(f'{self.workdir}/tumor.1_trimmed.fq.gz', trimmed_fq)
