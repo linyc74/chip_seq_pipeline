@@ -25,4 +25,9 @@ class TestChipSeqPipeline(TestCase):
 
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
-            discard_bam=False)
+            discard_bam=False,
+
+            peak_caller='MACS',
+            effective_genome_size='hs',
+            fdr=0.05
+        )

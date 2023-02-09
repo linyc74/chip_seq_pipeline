@@ -6,8 +6,10 @@ from .chip_seq_pipeline import ChipSeqPipeline
 
 def main(
         ref_fa: str,
-        fq1: str,
-        fq2: str,
+        treatment_fq1: str,
+        treatment_fq2: str,
+        control_fq1: str,
+        control_fq2: str,
         gtf: str,
 
         base_quality_cutoff: int,
@@ -17,6 +19,10 @@ def main(
         read_aligner: str,
         bowtie2_mode: str,
         discard_bam: bool,
+
+        peak_caller: str,
+        effective_genome_size: str,
+        fdr: float,
 
         outdir: str,
         threads: int,
@@ -34,8 +40,10 @@ def main(
 
     ChipSeqPipeline(settings=settings).main(
         ref_fa=ref_fa,
-        treatment_fq1=fq1,
-        treatment_fq2=fq2,
+        treatment_fq1=treatment_fq1,
+        treatment_fq2=treatment_fq2,
+        control_fq1=None if control_fq1.lower() == 'none' else control_fq1,
+        control_fq2=None if control_fq2.lower() == 'none' else control_fq2,
         gtf=gtf,
 
         base_quality_cutoff=base_quality_cutoff,
@@ -44,4 +52,8 @@ def main(
 
         read_aligner=read_aligner,
         bowtie2_mode=bowtie2_mode,
-        discard_bam=discard_bam)
+        discard_bam=discard_bam,
+
+        peak_caller=peak_caller,
+        effective_genome_size=effective_genome_size,
+        fdr=fdr)

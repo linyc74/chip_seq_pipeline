@@ -24,6 +24,8 @@ class ChipSeqPipeline(Processor):
     discard_bam: bool
 
     peak_caller: str
+    effective_genome_size: str
+    fdr: float
 
     treatment_bam: str
     control_bam: Optional[str]
@@ -33,8 +35,8 @@ class ChipSeqPipeline(Processor):
             ref_fa: str,
             treatment_fq1: str,
             treatment_fq2: str,
-            control_fq1: str,
-            control_fq2: str,
+            control_fq1: Optional[str],
+            control_fq2: Optional[str],
             gtf: str,
 
             base_quality_cutoff: int,
@@ -45,7 +47,9 @@ class ChipSeqPipeline(Processor):
             bowtie2_mode: str,
             discard_bam: bool,
 
-            peak_caller: str):
+            peak_caller: str,
+            effective_genome_size: str,
+            fdr: float):
 
         self.ref_fa = ref_fa
         self.treatment_fq1 = treatment_fq1
@@ -63,6 +67,8 @@ class ChipSeqPipeline(Processor):
         self.discard_bam = discard_bam
 
         self.peak_caller = peak_caller
+        self.effective_genome_size = effective_genome_size
+        self.fdr = fdr
 
         self.trimming()
         self.mapping()
@@ -95,7 +101,9 @@ class ChipSeqPipeline(Processor):
         PeakCalling(self.settings).main(
             treatment_bam=self.treatment_bam,
             control_bam=self.control_bam,
-            peak_caller=self.peak_caller)
+            peak_caller=self.peak_caller,
+            effective_genome_size=self.effective_genome_size,
+            fdr=self.fdr)
 
     def peak_annotation(self):
         pass

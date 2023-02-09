@@ -45,22 +45,6 @@ REQUIRED = [
         }
     },
     {
-        'keys': ['-3', '--control-fq1'],
-        'properties': {
-            'type': str,
-            'required': True,
-            'help': 'path to the control read 1 fastq(.gz) file',
-        }
-    },
-    {
-        'keys': ['-4', '--control-fq2'],
-        'properties': {
-            'type': str,
-            'required': True,
-            'help': 'path to the control read 2 fastq(.gz) file',
-        }
-    },
-    {
         'keys': ['-g', '--gtf'],
         'properties': {
             'type': str,
@@ -70,6 +54,24 @@ REQUIRED = [
     },
 ]
 OPTIONAL = [
+    {
+        'keys': ['-3', '--control-fq1'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'default': 'None',
+            'help': 'path to the control read 1 fastq(.gz) file (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['-4', '--control-fq2'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'default': 'None',
+            'help': 'path to the control read 2 fastq(.gz) file (default: %(default)s)',
+        }
+    },
     {
         'keys': ['--base-quality-cutoff'],
         'properties': {
@@ -208,8 +210,10 @@ class EntryPoint:
         print(f'Start running ChIP-seq pipeline version {__VERSION__}\n', flush=True)
         chip_seq_pipeline.main(
             ref_fa=args.ref_fa,
-            fq1=args.fq1,
-            fq2=args.fq2,
+            treatment_fq1=args.treatment_fq1,
+            treatment_fq2=args.treatment_fq2,
+            control_fq1=args.control_fq1,
+            control_fq2=args.control_fq2,
             gtf=args.gtf,
 
             base_quality_cutoff=args.base_quality_cutoff,
