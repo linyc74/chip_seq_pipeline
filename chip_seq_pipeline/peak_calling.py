@@ -28,7 +28,7 @@ class PeakCalling(Processor):
             f'macs2 callpeak',
             f'--treatment {self.treatment_bam}',
             f'--control {self.control_bam}',
-            f'--format BAM',
+            f'--format BAMPE',  # BAM paired-end reads
             f'--gsize {self.effective_genome_size}',
             f'--outdir {self.outdir}',
             f'--name test',

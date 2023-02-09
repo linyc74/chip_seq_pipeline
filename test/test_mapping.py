@@ -13,10 +13,10 @@ class TestMapping(TestCase):
     def test_bwa(self):
         treatment_bam, control_bam = Mapping(self.settings).main(
             ref_fa=f'{self.indir}/chr22.fa',
-            treatment_fq1=f'{self.indir}/small_ATO_0_KEAP1_S4_R1_001.fastq.gz',
-            treatment_fq2=f'{self.indir}/small_ATO_0_KEAP1_S4_R2_001.fastq.gz',
-            control_fq1=f'{self.indir}/small_ATO_0_Input_S1_R1_001.fastq.gz',
-            control_fq2=f'{self.indir}/small_ATO_0_Input_S1_R2_001.fastq.gz',
+            treatment_fq1=f'{self.indir}/test_ATO_0_KEAP1_S4_R1_001.fastq.gz',
+            treatment_fq2=f'{self.indir}/test_ATO_0_KEAP1_S4_R2_001.fastq.gz',
+            control_fq1=f'{self.indir}/test_ATO_0_Input_S1_R1_001.fastq.gz',
+            control_fq2=f'{self.indir}/test_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bwa',
             bowtie2_mode='',
             discard_bam=True
@@ -27,10 +27,10 @@ class TestMapping(TestCase):
     def test_bowtie2(self):
         treatment_bam, control_bam = Mapping(self.settings).main(
             ref_fa=f'{self.indir}/chr22.fa',
-            treatment_fq1=f'{self.indir}/small_ATO_0_KEAP1_S4_R1_001.fastq.gz',
-            treatment_fq2=f'{self.indir}/small_ATO_0_KEAP1_S4_R2_001.fastq.gz',
-            control_fq1=f'{self.indir}/small_ATO_0_Input_S1_R1_001.fastq.gz',
-            control_fq2=f'{self.indir}/small_ATO_0_Input_S1_R2_001.fastq.gz',
+            treatment_fq1=f'{self.indir}/test_ATO_0_KEAP1_S4_R1_001.fastq.gz',
+            treatment_fq2=f'{self.indir}/test_ATO_0_KEAP1_S4_R2_001.fastq.gz',
+            control_fq1=f'{self.indir}/test_ATO_0_Input_S1_R1_001.fastq.gz',
+            control_fq2=f'{self.indir}/test_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
             discard_bam=False

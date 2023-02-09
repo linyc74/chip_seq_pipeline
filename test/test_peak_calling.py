@@ -10,11 +10,11 @@ class TestPeakCalling(TestCase):
     def tearDown(self):
         self.tear_down()
 
-    def test_main(self):
+    def test_macs(self):
         PeakCalling(self.settings).main(
             treatment_bam=f'{self.indir}/sorted-treatment.bam',
             control_bam=f'{self.indir}/sorted-control.bam',
             peak_caller='MACS',
-            effective_genome_size='5.1e7',  # chr22
+            effective_genome_size='5.1e7',  # size of chr22
             fdr=0.05
         )
