@@ -18,11 +18,11 @@ class TestMapping(TestCase):
             control_fq1=f'{self.indir}/small_ATO_0_Input_S1_R1_001.fastq.gz',
             control_fq2=f'{self.indir}/small_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bwa',
-            bowtie2_mode='sensitive',
+            bowtie2_mode='',
             discard_bam=True
         )
-        self.assertFileExists(f'{self.workdir}/treatment-sorted.bam', treatment_bam)
-        self.assertFileExists(f'{self.workdir}/control-sorted.bam', control_bam)
+        self.assertFileExists(f'{self.workdir}/sorted-treatment.bam', treatment_bam)
+        self.assertFileExists(f'{self.workdir}/sorted-control.bam', control_bam)
 
     def test_bowtie2(self):
         treatment_bam, control_bam = Mapping(self.settings).main(
@@ -35,5 +35,5 @@ class TestMapping(TestCase):
             bowtie2_mode='sensitive',
             discard_bam=False
         )
-        self.assertFileExists(f'{self.outdir}/treatment-sorted.bam', treatment_bam)
+        self.assertFileExists(f'{self.outdir}/sorted-treatment.bam', treatment_bam)
         self.assertIsNone(control_bam)

@@ -1,6 +1,7 @@
 import os
 from os.path import basename
-from typing import Tuple, Optional
+from functools import partial
+from typing import Tuple, Optional, Callable
 from .template import Processor
 
 
@@ -14,6 +15,8 @@ class Trimming(Processor):
     base_quality_cutoff: int
     min_read_length: int
     max_read_length: int
+
+    trim_galore: Callable
 
     def main(
             self,
@@ -35,22 +38,29 @@ class Trimming(Processor):
         self.min_read_length = min_read_length
         self.max_read_length = max_read_length
 
-        self.treatment_fq1, self.treatment_fq2 = TrimGalore(self.settings).main(
-            fq1=self.treatment_fq1,
-            fq2=self.treatment_fq2,
+        self.set_trim_galore_function()
+        self.trim_treatment_fqs()
+        self.trim_control_fqs()
+
+        return self.treatment_fq1, self.treatment_fq2, self.control_fq1, self.control_fq2
+
+    def set_trim_galore_function(self):
+        self.trim_galore = partial(
+            TrimGalore(self.settings).main,
             base_quality_cutoff=self.base_quality_cutoff,
             min_read_length=self.min_read_length,
             max_read_length=self.max_read_length)
 
-        if self.control_fq1 is not None:
-            self.control_fq1, self.control_fq2 = TrimGalore(self.settings).main(
-                fq1=self.control_fq1,
-                fq2=self.control_fq2,
-                base_quality_cutoff=self.base_quality_cutoff,
-                min_read_length=self.min_read_length,
-                max_read_length=self.max_read_length)
+    def trim_treatment_fqs(self):
+        self.treatment_fq1, self.treatment_fq2 = self.trim_galore(
+            fq1=self.treatment_fq1,
+            fq2=self.treatment_fq2)
 
-        return self.treatment_fq1, self.treatment_fq2, self.control_fq1, self.control_fq2
+    def trim_control_fqs(self):
+        if self.control_fq1 is not None:
+            self.control_fq1, self.control_fq2 = self.trim_galore(
+                fq1=self.control_fq1,
+                fq2=self.control_fq2)
 
 
 class TrimGalore(Processor):

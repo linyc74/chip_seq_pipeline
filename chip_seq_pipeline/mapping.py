@@ -50,8 +50,10 @@ class Mapping(Processor):
         return self.treatment_bam, self.control_bam
 
     def run_bowtie2(self):
-        self.treatment_bam = Bowtie2(self.settings).main(
-            ref_fa=self.ref_fa,
+        index = Bowtie2Indexer(self.settings).main(ref_fa=self.ref_fa)
+
+        self.treatment_bam = Bowtie2Mapper(self.settings).main(
+            index=index,
             fq1=self.treatment_fq1,
             fq2=self.treatment_fq2,
             mode=self.bowtie2_mode,
@@ -61,8 +63,8 @@ class Mapping(Processor):
         if self.control_fq1 is None:
             self.control_bam = None
         else:
-            self.control_bam = Bowtie2(self.settings).main(
-                ref_fa=self.ref_fa,
+            self.control_bam = Bowtie2Mapper(self.settings).main(
+                index=index,
                 fq1=self.control_fq1,
                 fq2=self.control_fq2,
                 mode=self.bowtie2_mode,
@@ -70,8 +72,10 @@ class Mapping(Processor):
                 sample_name=self.CONTROL)
 
     def run_bwa(self):
-        self.treatment_bam = BWA(self.settings).main(
-            ref_fa=self.ref_fa,
+        index = BWAIndexer(self.settings).main(ref_fa=self.ref_fa)
+
+        self.treatment_bam = BWAMapper(self.settings).main(
+            index=index,
             fq1=self.treatment_fq1,
             fq2=self.treatment_fq2,
             discard_bam=self.discard_bam,
@@ -80,52 +84,90 @@ class Mapping(Processor):
         if self.control_fq1 is None:
             self.control_bam = None
         else:
-            self.control_bam = BWA(self.settings).main(
-                ref_fa=self.ref_fa,
+            self.control_bam = BWAMapper(self.settings).main(
+                index=index,
                 fq1=self.control_fq1,
                 fq2=self.control_fq2,
                 discard_bam=self.discard_bam,
                 sample_name=self.CONTROL)
 
 
-class Base(Processor):
+class Bowtie2Indexer(Processor):
 
     ref_fa: str
+    index: str
+
+    def main(self, ref_fa: str) -> str:
+
+        self.ref_fa = ref_fa
+
+        self.index = f'{self.workdir}/bowtie2-index'
+        log = f'{self.outdir}/bowtie2-build.log'
+        self.call(f'bowtie2-build {self.ref_fa} {self.index} 1> {log} 2> {log}')
+
+        return self.index
+
+
+class BWAIndexer(Processor):
+
+    ref_fa: str
+    index: str
+
+    def main(self, ref_fa: str) -> str:
+        self.ref_fa = ref_fa
+
+        self.index = f'{self.workdir}/bwa-index'
+        log = f'{self.outdir}/bwa-index.log'
+        cmd = self.CMD_LINEBREAK.join([
+            'bwa index',
+            f'-p {self.index}',
+            self.ref_fa,
+            f'2> {log}',
+        ])
+        self.call(cmd)
+
+        return self.index
+
+
+class TemplateMapper(Processor):
+
+    index: str
     fq1: str
     fq2: str
     discard_bam: bool
     sample_name: str
 
-    idx: str
+    index: str
     sam: str
     bam: str
     sorted_bam: str
+    mapping_stats_txt: str
 
     def run_workflow(self):
-        self.indexing()
+        self.set_filenames()
         self.mapping()
         self.sam_to_bam()
         self.sort_bam()
         self.mapping_stats()
         self.move_if_keep_bam()
 
-    def indexing(self):
-        pass
+    def set_filenames(self):
+        self.sam = f'{self.workdir}/mapped-{self.sample_name}.sam'
+        self.bam = f'{self.workdir}/mapped-{self.sample_name}.bam'
+        self.sorted_bam = f'{self.workdir}/sorted-{self.sample_name}.bam'
+        self.mapping_stats_txt = f'{self.outdir}/mapping-stats-{self.sample_name}.txt'
 
     def mapping(self):
         pass
 
     def sam_to_bam(self):
-        self.bam = f'{self.workdir}/{self.sample_name}-mapped.bam'
         self.call(f'samtools view -b -h {self.sam} > {self.bam}')
 
     def sort_bam(self):
-        self.sorted_bam = f'{self.workdir}/{self.sample_name}-sorted.bam'
         self.call(f'samtools sort {self.bam} > {self.sorted_bam}')
 
     def mapping_stats(self):
-        txt = f'{self.outdir}/{self.sample_name}-mapping-stats.txt'
-        self.call(f'samtools stats {self.sorted_bam} > {txt}')
+        self.call(f'samtools stats {self.sorted_bam} > {self.mapping_stats_txt}')
 
     def move_if_keep_bam(self):
         keep_bam = not self.discard_bam
@@ -135,20 +177,20 @@ class Base(Processor):
             self.sorted_bam = dst
 
 
-class Bowtie2(Base):
+class Bowtie2Mapper(TemplateMapper):
 
     mode: str
 
     def main(
             self,
-            ref_fa: str,
+            index: str,
             fq1: str,
             fq2: str,
             mode: str,
             discard_bam: bool,
             sample_name: str) -> str:
 
-        self.ref_fa = ref_fa
+        self.index = index
         self.fq1 = fq1
         self.fq2 = fq2
         self.mode = mode
@@ -159,16 +201,10 @@ class Bowtie2(Base):
 
         return self.sorted_bam
 
-    def indexing(self):
-        self.idx = f'{self.workdir}/{self.sample_name}-bowtie2-index'
-        log = f'{self.outdir}/{self.sample_name}-bowtie2-build.log'
-        self.call(f'bowtie2-build {self.ref_fa} {self.idx} 1> {log} 2> {log}')
-
     def mapping(self):
-        log = f'{self.outdir}/{self.sample_name}-bowtie2.log'
-        self.sam = f'{self.workdir}/{self.sample_name}-mapped.sam'
+        log = f'{self.outdir}/bowtie2-{self.sample_name}.log'
         cmd = f'''bowtie2 \\
--x {self.idx} \\
+-x {self.index} \\
 -1 {self.fq1} \\
 -2 {self.fq2} \\
 -S {self.sam} \\
@@ -180,17 +216,17 @@ class Bowtie2(Base):
         self.call(cmd)
 
 
-class BWA(Base):
+class BWAMapper(TemplateMapper):
 
     def main(
             self,
-            ref_fa: str,
+            index: str,
             fq1: str,
             fq2: str,
             discard_bam: bool,
             sample_name: str) -> str:
 
-        self.ref_fa = ref_fa
+        self.index = index
         self.fq1 = fq1
         self.fq2 = fq2
         self.discard_bam = discard_bam
@@ -200,25 +236,13 @@ class BWA(Base):
 
         return self.sorted_bam
 
-    def indexing(self):
-        self.idx = f'{self.workdir}/{self.sample_name}-bwa-index'
-        log = f'{self.outdir}/{self.sample_name}-bwa-index.log'
-        cmd = self.CMD_LINEBREAK.join([
-            'bwa index',
-            f'-p {self.idx}',
-            self.ref_fa,
-            f'2> {log}',
-        ])
-        self.call(cmd)
-
     def mapping(self):
-        self.sam = f'{self.workdir}/{self.sample_name}-mapped.sam'
-        log = f'{self.outdir}/{self.sample_name}-bwa-mem.log'
+        log = f'{self.outdir}/bwa-mem-{self.sample_name}.log'
         args = [
             'bwa mem',
             f'-t {self.threads}',
             f'-o {self.sam}',
-            self.idx,
+            self.index,
             self.fq1,
             self.fq2,
         ]

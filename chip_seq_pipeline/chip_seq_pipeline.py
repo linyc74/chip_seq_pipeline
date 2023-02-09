@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 from .mapping import Mapping
 from .trimming import Trimming
@@ -67,6 +68,7 @@ class ChipSeqPipeline(Processor):
         self.mapping()
         self.peak_calling()
         self.peak_annotation()
+        self.clean_up()
 
     def trimming(self):
         self.treatment_fq1, self.treatment_fq2, self.control_fq1, self.control_fq2 = Trimming(self.settings).main(
@@ -97,3 +99,22 @@ class ChipSeqPipeline(Processor):
 
     def peak_annotation(self):
         pass
+
+    def clean_up(self):
+        CleanUp(self.settings).main()
+
+
+class CleanUp(Processor):
+
+    def main(self):
+        self.collect_log_files()
+        self.remove_workdir()
+
+    def collect_log_files(self):
+        os.makedirs(f'{self.outdir}/log', exist_ok=True)
+        cmd = f'mv {self.outdir}/*.log {self.outdir}/log/'
+        self.call(cmd)
+
+    def remove_workdir(self):
+        if not self.debug:
+            self.call(f'rm -r {self.workdir}')
