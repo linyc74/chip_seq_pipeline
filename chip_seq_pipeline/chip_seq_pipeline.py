@@ -23,7 +23,6 @@ class ChipSeqPipeline(Processor):
     bowtie2_mode: str
     discard_bam: bool
 
-    peak_caller: str
     effective_genome_size: str
     fdr: float
 
@@ -47,7 +46,6 @@ class ChipSeqPipeline(Processor):
             bowtie2_mode: str,
             discard_bam: bool,
 
-            peak_caller: str,
             effective_genome_size: str,
             fdr: float):
 
@@ -66,7 +64,6 @@ class ChipSeqPipeline(Processor):
         self.bowtie2_mode = bowtie2_mode
         self.discard_bam = discard_bam
 
-        self.peak_caller = peak_caller
         self.effective_genome_size = effective_genome_size
         self.fdr = fdr
 
@@ -101,7 +98,6 @@ class ChipSeqPipeline(Processor):
         PeakCalling(self.settings).main(
             treatment_bam=self.treatment_bam,
             control_bam=self.control_bam,
-            peak_caller=self.peak_caller,
             effective_genome_size=self.effective_genome_size,
             fdr=self.fdr)
 

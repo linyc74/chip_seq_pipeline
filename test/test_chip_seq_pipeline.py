@@ -7,8 +7,8 @@ class TestChipSeqPipeline(TestCase):
     def setUp(self):
         self.set_up(py_path=__file__)
 
-    # def tearDown(self):
-    #     self.tear_down()
+    def tearDown(self):
+        self.tear_down()
 
     def test_main(self):
         ChipSeqPipeline(self.settings).main(
@@ -27,7 +27,6 @@ class TestChipSeqPipeline(TestCase):
             bowtie2_mode='sensitive',
             discard_bam=False,
 
-            peak_caller='MACS',
             effective_genome_size='hs',
             fdr=0.05
         )

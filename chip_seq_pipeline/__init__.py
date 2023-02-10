@@ -20,7 +20,6 @@ def main(
         bowtie2_mode: str,
         discard_bam: bool,
 
-        peak_caller: str,
         effective_genome_size: str,
         fdr: float,
 
@@ -54,6 +53,5 @@ def main(
         bowtie2_mode=bowtie2_mode,
         discard_bam=discard_bam,
 
-        peak_caller=peak_caller,
         effective_genome_size=effective_genome_size,
         fdr=fdr)

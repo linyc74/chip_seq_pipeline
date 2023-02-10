@@ -14,7 +14,6 @@ class TestPeakCalling(TestCase):
         PeakCalling(self.settings).main(
             treatment_bam=f'{self.indir}/sorted-treatment.bam',
             control_bam=f'{self.indir}/sorted-control.bam',
-            peak_caller='MACS',
             effective_genome_size='5.1e7',  # size of chr22
             fdr=0.05
         )

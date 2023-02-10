@@ -136,6 +136,24 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['--effective-genome-size'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'default': 'hs',
+            'help': 'for MACS to compute p-value, e.g. "hs" for human (2.7e9), "mm" for mouse (1.87e9), or numbers like "1.0e+9" or "1000000000" (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--fdr'],
+        'properties': {
+            'type': float,
+            'required': False,
+            'default': 0.05,
+            'help': 'MACS false discovery rate (default: %(default)s)',
+        }
+    },
+    {
         'keys': ['-o', '--outdir'],
         'properties': {
             'type': str,
@@ -223,6 +241,9 @@ class EntryPoint:
             read_aligner=args.read_aligner,
             bowtie2_mode=args.bowtie2_mode,
             discard_bam=args.discard_bam,
+
+            effective_genome_size=args.effective_genome_size,
+            fdr=args.fdr,
 
             outdir=args.outdir,
             threads=args.threads,
