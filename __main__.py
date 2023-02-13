@@ -95,7 +95,7 @@ OPTIONAL = [
         'properties': {
             'type': int,
             'required': False,
-            'default': -1,
+            'default': 0,
             'help': 'maximum read length after trimming, defualt for no limit (default: %(default)s)',
         }
     },
