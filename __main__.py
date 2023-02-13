@@ -242,8 +242,8 @@ class EntryPoint:
             bowtie2_mode=args.bowtie2_mode,
             discard_bam=args.discard_bam,
 
-            macs_effective_genome_size=args.effective_genome_size,
-            macs_fdr=args.fdr,
+            macs_effective_genome_size=args.macs_effective_genome_size,
+            macs_fdr=args.macs_fdr,
 
             genome_version=args.genome_version,
 
