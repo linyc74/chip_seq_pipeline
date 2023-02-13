@@ -17,7 +17,6 @@ class TestChipSeqPipeline(TestCase):
             treatment_fq2=f'{self.indir}/test_ATO_0_KEAP1_S4_R2_001.fastq.gz',
             control_fq1=f'{self.indir}/test_ATO_0_Input_S1_R1_001.fastq.gz',
             control_fq2=f'{self.indir}/test_ATO_0_Input_S1_R2_001.fastq.gz',
-            gtf=f'{self.indir}/X.gtf',
 
             base_quality_cutoff=20,
             min_read_length=20,

@@ -13,7 +13,6 @@ class ChipSeqPipeline(Processor):
     treatment_fq2: str
     control_fq1: Optional[str]
     control_fq2: Optional[str]
-    gtf: str
 
     base_quality_cutoff: int
     min_read_length: int
@@ -36,7 +35,6 @@ class ChipSeqPipeline(Processor):
             treatment_fq2: str,
             control_fq1: Optional[str],
             control_fq2: Optional[str],
-            gtf: str,
 
             base_quality_cutoff: int,
             min_read_length: int,
@@ -54,7 +52,6 @@ class ChipSeqPipeline(Processor):
         self.treatment_fq2 = treatment_fq2
         self.control_fq1 = control_fq1
         self.control_fq2 = control_fq2
-        self.gtf = gtf
 
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length

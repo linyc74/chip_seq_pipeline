@@ -44,14 +44,6 @@ REQUIRED = [
             'help': 'path to the treatment read 2 fastq(.gz) file',
         }
     },
-    {
-        'keys': ['-g', '--gtf'],
-        'properties': {
-            'type': str,
-            'required': True,
-            'help': 'path to the general transfer format gtf file',
-        }
-    },
 ]
 OPTIONAL = [
     {
@@ -232,7 +224,6 @@ class EntryPoint:
             treatment_fq2=args.treatment_fq2,
             control_fq1=args.control_fq1,
             control_fq2=args.control_fq2,
-            gtf=args.gtf,
 
             base_quality_cutoff=args.base_quality_cutoff,
             min_read_length=args.min_read_length,

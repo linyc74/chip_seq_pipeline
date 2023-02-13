@@ -10,7 +10,6 @@ def main(
         treatment_fq2: str,
         control_fq1: str,
         control_fq2: str,
-        gtf: str,
 
         base_quality_cutoff: int,
         min_read_length: int,
@@ -43,7 +42,6 @@ def main(
         treatment_fq2=treatment_fq2,
         control_fq1=None if control_fq1.lower() == 'none' else control_fq1,
         control_fq2=None if control_fq2.lower() == 'none' else control_fq2,
-        gtf=gtf,
 
         base_quality_cutoff=base_quality_cutoff,
         min_read_length=min_read_length,
