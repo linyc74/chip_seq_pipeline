@@ -7,30 +7,43 @@ class PeakCalling(Processor):
 
     treatment_bam: str
     control_bam: Optional[str]
-    effective_genome_size: str
-    fdr: float
+    macs_effective_genome_size: str
+    macs_fdr: float
+
+    peak_files: List[str]
 
     def main(
             self,
             treatment_bam: str,
             control_bam: Optional[str],
-            effective_genome_size: str,
-            fdr: float):
+            macs_effective_genome_size: str,
+            macs_fdr: float) -> List[str]:
 
         self.treatment_bam = treatment_bam
         self.control_bam = control_bam
-        self.effective_genome_size = effective_genome_size
-        self.fdr = fdr
+        self.macs_effective_genome_size = macs_effective_genome_size
+        self.macs_fdr = macs_fdr
 
-        MACS(self.settings).main(
+        self.peak_files = []
+
+        self.macs()
+        self.homer()
+
+        return self.peak_files
+
+    def macs(self):
+        files = MACS(self.settings).main(
             treatment_bam=self.treatment_bam,
             control_bam=self.control_bam,
-            effective_genome_size=self.effective_genome_size,
-            fdr=self.fdr)
+            effective_genome_size=self.macs_effective_genome_size,
+            fdr=self.macs_fdr)
+        self.peak_files += files
 
-        HOMER(self.settings).main(
+    def homer(self):
+        files = HOMER(self.settings).main(
             treatment_bam=self.treatment_bam,
             control_bam=self.control_bam)
+        self.peak_files += files
 
 
 class MACS(Processor):
@@ -42,14 +55,15 @@ class MACS(Processor):
     effective_genome_size: str
     fdr: float
 
+    dstdir: str
     base_args: List[str]
 
     def main(
             self,
             treatment_bam: str,
-            control_bam: str,
+            control_bam: Optional[str],
             effective_genome_size: str,
-            fdr: float):
+            fdr: float) -> List[str]:
 
         self.treatment_bam = treatment_bam
         self.control_bam = control_bam
@@ -60,14 +74,19 @@ class MACS(Processor):
         self.call_sharp_peaks()
         self.call_broad_peaks()
 
+        return [
+            f'{self.dstdir}/broad_peaks.broadPeak',
+            f'{self.dstdir}/sharp_peaks.narrowPeak'
+        ]
+
     def set_base_args(self):
-        dstdir = f'{self.outdir}/macs2'
+        self.dstdir = f'{self.outdir}/macs2'
         self.base_args = [
             f'macs2 callpeak',
             f'--treatment {self.treatment_bam}',
             f'--format BAMPE',  # BAM paired-end reads
             f'--gsize {self.effective_genome_size}',
-            f'--outdir {dstdir}',
+            f'--outdir {self.dstdir}',
             f'--bdg',  # save extended fragment pileup, and local lambda tracks (two files) at every bp into a bedGraph file
             f'--qvalue {self.fdr}',
         ]
@@ -109,7 +128,7 @@ class HOMER(Processor):
     def main(
             self,
             treatment_bam: str,
-            control_bam: Optional[str]):
+            control_bam: Optional[str]) -> List[str]:
 
         self.treatment_bam = treatment_bam
         self.control_bam = control_bam
@@ -119,6 +138,8 @@ class HOMER(Processor):
         self.make_dstdir()
         self.find_peaks_factor()
         self.find_peaks_histone()
+
+        return [self.factor_peaks_txt, self.histone_regions_txt]
 
     def make_treatment_tag_dir(self):
         self.treatment_tag_dir = f'{self.workdir}/treatment-tag'
@@ -147,7 +168,7 @@ class HOMER(Processor):
             f'-format sam',
             bam,
             f'1> {log}',
-            f'1> {log}',
+            f'2> {log}',
         ]
         self.call(self.CMD_LINEBREAK.join(args))
 
@@ -171,7 +192,7 @@ class HOMER(Processor):
         log = f'{self.outdir}/findPeaks-factor.log'
         args += [
             f'1> {log}',
-            f'1> {log}',
+            f'2> {log}',
         ]
 
         self.call(self.CMD_LINEBREAK.join(args))
@@ -192,7 +213,7 @@ class HOMER(Processor):
         log = f'{self.outdir}/findPeaks-histone.log'
         args += [
             f'1> {log}',
-            f'1> {log}',
+            f'2> {log}',
         ]
 
         self.call(self.CMD_LINEBREAK.join(args))

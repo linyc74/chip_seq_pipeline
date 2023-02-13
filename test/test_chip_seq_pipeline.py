@@ -26,6 +26,8 @@ class TestChipSeqPipeline(TestCase):
             bowtie2_mode='sensitive',
             discard_bam=False,
 
-            effective_genome_size='hs',
-            fdr=0.05
+            macs_effective_genome_size='hs',
+            macs_fdr=0.05,
+
+            genome_version='hg38'
         )

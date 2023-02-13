@@ -2,7 +2,7 @@ import argparse
 import chip_seq_pipeline
 
 
-__VERSION__ = '1.0.0'
+__VERSION__ = '1.1.0-beta'
 
 
 PURPLE = '\033[95m'
@@ -128,7 +128,7 @@ OPTIONAL = [
         }
     },
     {
-        'keys': ['--effective-genome-size'],
+        'keys': ['--macs-effective-genome-size'],
         'properties': {
             'type': str,
             'required': False,
@@ -137,12 +137,21 @@ OPTIONAL = [
         }
     },
     {
-        'keys': ['--fdr'],
+        'keys': ['--macs-fdr'],
         'properties': {
             'type': float,
             'required': False,
             'default': 0.05,
             'help': 'MACS false discovery rate (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--genome-version'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'default': 'hg38',
+            'help': 'genome version for HOMER peak annotation, e.g. "hg38", "hg19", "mm8" (default: %(default)s)',
         }
     },
     {
@@ -233,8 +242,10 @@ class EntryPoint:
             bowtie2_mode=args.bowtie2_mode,
             discard_bam=args.discard_bam,
 
-            effective_genome_size=args.effective_genome_size,
-            fdr=args.fdr,
+            macs_effective_genome_size=args.effective_genome_size,
+            macs_fdr=args.fdr,
+
+            genome_version=args.genome_version,
 
             outdir=args.outdir,
             threads=args.threads,

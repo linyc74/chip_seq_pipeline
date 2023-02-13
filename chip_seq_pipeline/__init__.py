@@ -19,8 +19,10 @@ def main(
         bowtie2_mode: str,
         discard_bam: bool,
 
-        effective_genome_size: str,
-        fdr: float,
+        macs_effective_genome_size: str,
+        macs_fdr: float,
+
+        genome_version: str,
 
         outdir: str,
         threads: int,
@@ -51,5 +53,7 @@ def main(
         bowtie2_mode=bowtie2_mode,
         discard_bam=discard_bam,
 
-        effective_genome_size=effective_genome_size,
-        fdr=fdr)
+        macs_effective_genome_size=macs_effective_genome_size,
+        macs_fdr=macs_fdr,
+
+        genome_version=genome_version)

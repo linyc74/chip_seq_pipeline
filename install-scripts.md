@@ -25,6 +25,12 @@ cd ~/opt/HOMER-4.7
 perl configureHomer.pl -install
 ```
 
+Download hg38 (GRCh38) genome for annotation
+
+```shell
+perl configureHomer.pl -install hg38
+```
+
 In `~/.bashrc` add to `PATH` variable
 ```shell
 export PATH=$PATH:$HOME/opt/HOMER-4.7/bin

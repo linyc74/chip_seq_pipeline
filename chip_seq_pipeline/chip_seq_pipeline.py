@@ -1,9 +1,10 @@
 import os
-from typing import Optional
+from typing import Optional, List
 from .mapping import Mapping
 from .trimming import Trimming
 from .template import Processor
 from .peak_calling import PeakCalling
+from .peak_annotation import PeakAnnotation
 
 
 class ChipSeqPipeline(Processor):
@@ -22,11 +23,14 @@ class ChipSeqPipeline(Processor):
     bowtie2_mode: str
     discard_bam: bool
 
-    effective_genome_size: str
-    fdr: float
+    macs_effective_genome_size: str
+    macs_fdr: float
+
+    genome_version: str
 
     treatment_bam: str
     control_bam: Optional[str]
+    peak_files: List[str]
 
     def main(
             self,
@@ -44,8 +48,10 @@ class ChipSeqPipeline(Processor):
             bowtie2_mode: str,
             discard_bam: bool,
 
-            effective_genome_size: str,
-            fdr: float):
+            macs_effective_genome_size: str,
+            macs_fdr: float,
+
+            genome_version: str):
 
         self.ref_fa = ref_fa
         self.treatment_fq1 = treatment_fq1
@@ -61,8 +67,10 @@ class ChipSeqPipeline(Processor):
         self.bowtie2_mode = bowtie2_mode
         self.discard_bam = discard_bam
 
-        self.effective_genome_size = effective_genome_size
-        self.fdr = fdr
+        self.macs_effective_genome_size = macs_effective_genome_size
+        self.macs_fdr = macs_fdr
+
+        self.genome_version = genome_version
 
         self.trimming()
         self.mapping()
@@ -92,14 +100,16 @@ class ChipSeqPipeline(Processor):
             discard_bam=self.discard_bam)
 
     def peak_calling(self):
-        PeakCalling(self.settings).main(
+        self.peak_files = PeakCalling(self.settings).main(
             treatment_bam=self.treatment_bam,
             control_bam=self.control_bam,
-            effective_genome_size=self.effective_genome_size,
-            fdr=self.fdr)
+            macs_effective_genome_size=self.macs_effective_genome_size,
+            macs_fdr=self.macs_fdr)
 
     def peak_annotation(self):
-        pass
+        PeakAnnotation(self.settings).main(
+            peak_files=self.peak_files,
+            genome_version=self.genome_version)
 
     def clean_up(self):
         CleanUp(self.settings).main()
