@@ -2,7 +2,7 @@ import argparse
 import chip_seq_pipeline
 
 
-__VERSION__ = '1.1.1-beta'
+__VERSION__ = '1.1.1'
 
 
 PURPLE = '\033[95m'
