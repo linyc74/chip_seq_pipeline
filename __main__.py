@@ -2,7 +2,7 @@ import argparse
 import chip_seq_pipeline
 
 
-__VERSION__ = '1.1.1'
+__VERSION__ = '1.1.2-beta'
 
 
 PURPLE = '\033[95m'
@@ -83,15 +83,6 @@ OPTIONAL = [
         }
     },
     {
-        'keys': ['--max-read-length'],
-        'properties': {
-            'type': int,
-            'required': False,
-            'default': 0,
-            'help': 'maximum read length after trimming, defualt for no limit (default: %(default)s)',
-        }
-    },
-    {
         'keys': ['--read-aligner'],
         'properties': {
             'type': str,
@@ -125,6 +116,13 @@ OPTIONAL = [
         'properties': {
             'action': 'store_true',
             'help': 'do not save sorted BAM files in outdir',
+        }
+    },
+    {
+        'keys': ['--skip-mark-duplicates'],
+        'properties': {
+            'action': 'store_true',
+            'help': 'do not mark PCR duplicates',
         }
     },
     {
@@ -236,11 +234,12 @@ class EntryPoint:
 
             base_quality_cutoff=args.base_quality_cutoff,
             min_read_length=args.min_read_length,
-            max_read_length=args.max_read_length,
 
             read_aligner=args.read_aligner,
             bowtie2_mode=args.bowtie2_mode,
             discard_bam=args.discard_bam,
+
+            skip_mark_duplicates=args.skip_mark_duplicates,
 
             macs_effective_genome_size=args.macs_effective_genome_size,
             macs_fdr=args.macs_fdr,

@@ -10,7 +10,7 @@ class TestChipSeqPipeline(TestCase):
     def tearDown(self):
         self.tear_down()
 
-    def test_main(self):
+    def test_treatment_control(self):
         ChipSeqPipeline(self.settings).main(
             ref_fa=f'{self.indir}/chr22.fa',
             treatment_fq1=f'{self.indir}/test_ATO_0_KEAP1_S4_R1_001.fastq.gz',
@@ -20,11 +20,35 @@ class TestChipSeqPipeline(TestCase):
 
             base_quality_cutoff=20,
             min_read_length=20,
-            max_read_length=150,
 
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
             discard_bam=False,
+
+            skip_mark_duplicates=False,
+
+            macs_effective_genome_size='hs',
+            macs_fdr=0.05,
+
+            genome_version='hg38'
+        )
+
+    def test_treatment_only(self):
+        ChipSeqPipeline(self.settings).main(
+            ref_fa=f'{self.indir}/chr22.fa',
+            treatment_fq1=f'{self.indir}/test_ATO_0_KEAP1_S4_R1_001.fastq.gz',
+            treatment_fq2=f'{self.indir}/test_ATO_0_KEAP1_S4_R2_001.fastq.gz',
+            control_fq1=None,
+            control_fq2=None,
+
+            base_quality_cutoff=20,
+            min_read_length=20,
+
+            read_aligner='bowtie2',
+            bowtie2_mode='sensitive',
+            discard_bam=False,
+
+            skip_mark_duplicates=False,
 
             macs_effective_genome_size='hs',
             macs_fdr=0.05,

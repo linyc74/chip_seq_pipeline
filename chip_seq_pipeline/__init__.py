@@ -13,11 +13,12 @@ def main(
 
         base_quality_cutoff: int,
         min_read_length: int,
-        max_read_length: int,
 
         read_aligner: str,
         bowtie2_mode: str,
         discard_bam: bool,
+
+        skip_mark_duplicates: bool,
 
         macs_effective_genome_size: str,
         macs_fdr: float,
@@ -47,11 +48,12 @@ def main(
 
         base_quality_cutoff=base_quality_cutoff,
         min_read_length=min_read_length,
-        max_read_length=max_read_length,
 
         read_aligner=read_aligner,
         bowtie2_mode=bowtie2_mode,
         discard_bam=discard_bam,
+
+        skip_mark_duplicates=skip_mark_duplicates,
 
         macs_effective_genome_size=macs_effective_genome_size,
         macs_fdr=macs_fdr,

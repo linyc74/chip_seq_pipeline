@@ -17,8 +17,7 @@ class TestTrimming(TestCase):
             control_fq1=f'{self.indir}/test_ATO_0_KEAP1_S4_R1_001.fastq.gz',
             control_fq2=f'{self.indir}/test_ATO_0_KEAP1_S4_R2_001.fastq.gz',
             base_quality_cutoff=20,
-            min_read_length=20,
-            max_read_length=-1,
+            min_read_length=20
         )
         for expected, actual in [
             (f'{self.workdir}/test_ATO_0_Input_S1_R1_001_val_1.fq.gz', treatment_fq1),

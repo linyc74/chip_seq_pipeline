@@ -14,7 +14,6 @@ class Trimming(Processor):
 
     base_quality_cutoff: int
     min_read_length: int
-    max_read_length: int
 
     trim_galore: Callable
 
@@ -26,8 +25,7 @@ class Trimming(Processor):
             control_fq2: str,
 
             base_quality_cutoff: int,
-            min_read_length: int,
-            max_read_length: int) -> Tuple[str, str, str, str]:
+            min_read_length: int) -> Tuple[str, str, str, str]:
 
         self.treatment_fq1 = treatment_fq1
         self.treatment_fq2 = treatment_fq2
@@ -36,7 +34,6 @@ class Trimming(Processor):
 
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
-        self.max_read_length = max_read_length
 
         self.set_trim_galore_function()
         self.trim_treatment_fqs()
@@ -48,8 +45,7 @@ class Trimming(Processor):
         self.trim_galore = partial(
             TrimGalore(self.settings).main,
             base_quality_cutoff=self.base_quality_cutoff,
-            min_read_length=self.min_read_length,
-            max_read_length=self.max_read_length)
+            min_read_length=self.min_read_length)
 
     def trim_treatment_fqs(self):
         self.treatment_fq1, self.treatment_fq2 = self.trim_galore(
@@ -73,7 +69,6 @@ class TrimGalore(Processor):
     fq2: str
     base_quality_cutoff: int
     min_read_length: int
-    max_read_length: int
 
     out_fq1: str
     out_fq2: str
@@ -83,14 +78,12 @@ class TrimGalore(Processor):
             fq1: str,
             fq2: str,
             base_quality_cutoff: int,
-            min_read_length: int,
-            max_read_length: int) -> Tuple[str, str]:
+            min_read_length: int) -> Tuple[str, str]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
-        self.max_read_length = max_read_length
 
         self.execute()
         self.set_out_fq1_fq2()

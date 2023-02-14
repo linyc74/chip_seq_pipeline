@@ -6,12 +6,7 @@ conda activate chip-seq
 
 pip install pandas
 
-conda install -c bioconda \
-  macs2=2.2.7.1 \
-  bwa=0.7.17 \
-  trim-galore=0.6.2 \
-  samtools=1.16 \
-  bowtie2=2.5.1
+conda install -c bioconda macs2 bwa trim-galore samtools bowtie2 gatk4
 ```
 
 ### HOMER

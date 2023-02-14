@@ -5,6 +5,7 @@ from .trimming import Trimming
 from .template import Processor
 from .peak_calling import PeakCalling
 from .peak_annotation import PeakAnnotation
+from .mark_duplicates import MarkDuplicates
 
 
 class ChipSeqPipeline(Processor):
@@ -17,11 +18,12 @@ class ChipSeqPipeline(Processor):
 
     base_quality_cutoff: int
     min_read_length: int
-    max_read_length: int
 
     read_aligner: str
     bowtie2_mode: str
     discard_bam: bool
+
+    skip_mark_duplicates: bool
 
     macs_effective_genome_size: str
     macs_fdr: float
@@ -42,11 +44,12 @@ class ChipSeqPipeline(Processor):
 
             base_quality_cutoff: int,
             min_read_length: int,
-            max_read_length: int,
 
             read_aligner: str,
             bowtie2_mode: str,
             discard_bam: bool,
+
+            skip_mark_duplicates: bool,
 
             macs_effective_genome_size: str,
             macs_fdr: float,
@@ -61,11 +64,12 @@ class ChipSeqPipeline(Processor):
 
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
-        self.max_read_length = max_read_length
 
         self.read_aligner = read_aligner
         self.bowtie2_mode = bowtie2_mode
         self.discard_bam = discard_bam
+
+        self.skip_mark_duplicates = skip_mark_duplicates
 
         self.macs_effective_genome_size = macs_effective_genome_size
         self.macs_fdr = macs_fdr
@@ -74,6 +78,7 @@ class ChipSeqPipeline(Processor):
 
         self.trimming()
         self.mapping()
+        self.mark_duplicates()
         self.peak_calling()
         self.peak_annotation()
         self.clean_up()
@@ -85,8 +90,7 @@ class ChipSeqPipeline(Processor):
             control_fq1=self.control_fq1,
             control_fq2=self.control_fq2,
             base_quality_cutoff=self.base_quality_cutoff,
-            min_read_length=self.min_read_length,
-            max_read_length=self.max_read_length)
+            min_read_length=self.min_read_length)
 
     def mapping(self):
         self.treatment_bam, self.control_bam = Mapping(self.settings).main(
@@ -98,6 +102,12 @@ class ChipSeqPipeline(Processor):
             read_aligner=self.read_aligner,
             bowtie2_mode=self.bowtie2_mode,
             discard_bam=self.discard_bam)
+
+    def mark_duplicates(self):
+        if not self.skip_mark_duplicates:
+            self.treatment_bam, self.control_bam = MarkDuplicates(self.settings).main(
+                treatment_bam=self.treatment_bam,
+                control_bam=self.control_bam)
 
     def peak_calling(self):
         self.peak_files = PeakCalling(self.settings).main(
