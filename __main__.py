@@ -2,7 +2,7 @@ import argparse
 import chip_seq_pipeline
 
 
-__VERSION__ = '1.1.0'
+__VERSION__ = '1.1.1-beta'
 
 
 PURPLE = '\033[95m'
@@ -159,7 +159,7 @@ OPTIONAL = [
         'properties': {
             'type': str,
             'required': False,
-            'default': 'rna_seq_pipeline_outdir',
+            'default': 'chip_seq_pipeline_outdir',
             'help': 'path to the output directory (default: %(default)s)',
         }
     },
