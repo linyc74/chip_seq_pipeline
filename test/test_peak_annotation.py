@@ -24,7 +24,7 @@ class TestPeakAnnotation(TestCase):
             f'{self.outdir}/homer/factor-peaks.txt',
             f'{self.outdir}/homer/histone-regions.txt',
             f'{self.outdir}/macs2/broad_peaks.broadPeak',
-            f'{self.outdir}/macs2/sharp_peaks.narrowPeak',
+            f'{self.outdir}/macs2/narrow_peaks.narrowPeak',
         ]
 
         PeakAnnotation(self.settings).main(

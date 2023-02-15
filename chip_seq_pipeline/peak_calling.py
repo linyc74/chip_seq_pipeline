@@ -71,12 +71,12 @@ class MACS(Processor):
         self.fdr = fdr
 
         self.set_base_args()
-        self.call_sharp_peaks()
+        self.call_narrow_peaks()
         self.call_broad_peaks()
 
         return [
             f'{self.dstdir}/broad_peaks.broadPeak',
-            f'{self.dstdir}/sharp_peaks.narrowPeak'
+            f'{self.dstdir}/narrow_peaks.narrowPeak'
         ]
 
     def set_base_args(self):
@@ -93,10 +93,10 @@ class MACS(Processor):
         if self.control_bam is not None:
             self.base_args += [f'--control {self.control_bam}']
 
-    def call_sharp_peaks(self):
+    def call_narrow_peaks(self):
         log = f'{self.outdir}/macs2-callpeak.log'
         args = self.base_args + [
-            f'--name sharp',
+            f'--name narrow',
             f'1> {log}',
             f'2> {log}',
         ]
