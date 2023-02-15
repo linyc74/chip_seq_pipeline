@@ -87,7 +87,6 @@ class MACS(Processor):
             f'--format BAMPE',  # BAM paired-end reads
             f'--gsize {self.effective_genome_size}',
             f'--outdir {self.dstdir}',
-            f'--bdg',  # save extended fragment pileup, and local lambda tracks (two files) at every bp into a bedGraph file
             f'--qvalue {self.fdr}',
         ]
         if self.control_bam is not None:
