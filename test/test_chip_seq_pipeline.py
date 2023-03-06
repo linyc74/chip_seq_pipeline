@@ -30,7 +30,8 @@ class TestChipSeqPipeline(TestCase):
             macs_effective_genome_size='hs',
             macs_fdr=0.05,
 
-            genome_version='hg38'
+            genome_version='hg38',
+            motif_finding_fragment_size=20
         )
 
     def test_treatment_only(self):
@@ -53,5 +54,6 @@ class TestChipSeqPipeline(TestCase):
             macs_effective_genome_size='hs',
             macs_fdr=0.05,
 
-            genome_version='hg38'
+            genome_version='hg38',
+            motif_finding_fragment_size=20
         )

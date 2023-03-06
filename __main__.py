@@ -149,7 +149,16 @@ OPTIONAL = [
             'type': str,
             'required': False,
             'default': 'hg38',
-            'help': 'genome version for HOMER peak annotation, e.g. "hg38", "hg19", "mm8" (default: %(default)s)',
+            'help': 'genome version for HOMER\'s peak annotation and motif finding, e.g. "hg38", "hg19", "mm8" (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--motif-finding-fragment-size'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': 150,
+            'help': 'fragment size for HOMER\'s motif finding (default: %(default)s)',
         }
     },
     {
@@ -245,6 +254,7 @@ class EntryPoint:
             macs_fdr=args.macs_fdr,
 
             genome_version=args.genome_version,
+            motif_finding_fragment_size=args.motif_finding_fragment_size,
 
             outdir=args.outdir,
             threads=args.threads,

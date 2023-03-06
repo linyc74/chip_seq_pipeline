@@ -30,6 +30,7 @@ class ChipSeqPipeline(Processor):
     macs_fdr: float
 
     genome_version: str
+    motif_finding_fragment_size: int
 
     treatment_bam: str
     control_bam: Optional[str]
@@ -55,7 +56,8 @@ class ChipSeqPipeline(Processor):
             macs_effective_genome_size: str,
             macs_fdr: float,
 
-            genome_version: str):
+            genome_version: str,
+            motif_finding_fragment_size: int):
 
         self.ref_fa = ref_fa
         self.treatment_fq1 = treatment_fq1
@@ -76,12 +78,14 @@ class ChipSeqPipeline(Processor):
         self.macs_fdr = macs_fdr
 
         self.genome_version = genome_version
+        self.motif_finding_fragment_size = motif_finding_fragment_size
 
         self.trimming()
         self.mapping()
         self.mark_duplicates()
         self.peak_calling()
         self.peak_annotation()
+        self.motif_finding()
         self.clean_up()
 
     def trimming(self):
@@ -121,6 +125,12 @@ class ChipSeqPipeline(Processor):
         PeakAnnotation(self.settings).main(
             peak_files=self.peak_files,
             genome_version=self.genome_version)
+
+    def motif_finding(self):
+        MotifFinding(self.settings).main(
+            peak_files=self.peak_files,
+            genome_version=self.genome_version,
+            fragment_size=self.motif_finding_fragment_size)
 
     def clean_up(self):
         CleanUp(self.settings).main()

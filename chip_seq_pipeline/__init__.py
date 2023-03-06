@@ -24,6 +24,7 @@ def main(
         macs_fdr: float,
 
         genome_version: str,
+        motif_finding_fragment_size: int,
 
         outdir: str,
         threads: int,
@@ -58,4 +59,5 @@ def main(
         macs_effective_genome_size=macs_effective_genome_size,
         macs_fdr=macs_fdr,
 
-        genome_version=genome_version)
+        genome_version=genome_version,
+        motif_finding_fragment_size=motif_finding_fragment_size)

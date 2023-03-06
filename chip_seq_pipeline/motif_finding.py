@@ -22,7 +22,7 @@ class MotifFinding(Processor):
         self.genome_version = genome_version
         self.fragment_size = fragment_size
 
-        with Pool(len(self.peak_files)) as p:
+        with Pool(self.threads) as p:
             p.map(self.find_motifs_genome, self.peak_files)
 
     def find_motifs_genome(self, peak_file):
