@@ -4,6 +4,7 @@ from .mapping import Mapping
 from .trimming import Trimming
 from .template import Processor
 from .peak_calling import PeakCalling
+from .motif_finding import MotifFinding
 from .peak_annotation import PeakAnnotation
 from .mark_duplicates import MarkDuplicates
 

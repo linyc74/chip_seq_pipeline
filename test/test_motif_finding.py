@@ -29,5 +29,5 @@ class TestMotifFinding(TestCase):
 
         MotifFinding(self.settings).main(
             peak_files=peak_files,
-            genome_version='hg38'
-        )
+            genome_version='hg38',
+            fragment_size=20)
