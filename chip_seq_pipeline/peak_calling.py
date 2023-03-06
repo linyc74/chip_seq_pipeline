@@ -47,6 +47,9 @@ class PeakCalling(Processor):
 
 
 class MACS(Processor):
+    """
+    For MACS2 output files please see: https://github.com/macs3-project/MACS/blob/master/docs/callpeak.md
+    """
 
     BROAD_CUTOFF = 0.1
 

@@ -1,4 +1,5 @@
 from typing import List
+from os.path import basename
 from .template import Processor
 
 
@@ -19,12 +20,13 @@ class PeakAnnotation(Processor):
 
     def annotate(self, peak_file: str):
         out = self.__add_suffix_to_fname(peak_file)
+        log = f'{self.outdir}/annotatePeaks-[{basename(peak_file)}].log'
         args = [
             'annotatePeaks.pl',
             peak_file,
             self.genome_version,
             f'1> {out}',
-            f'2> {self.outdir}/annotatePeaks.log',
+            f'2> {log}',
         ]
         self.call(self.CMD_LINEBREAK.join(args))
 

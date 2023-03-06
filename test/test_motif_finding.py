@@ -1,10 +1,10 @@
 import shutil
 from os.path import exists
-from chip_seq_pipeline.peak_annotation import PeakAnnotation
+from chip_seq_pipeline.motif_finding import MotifFinding
 from .setup import TestCase
 
 
-class TestPeakAnnotation(TestCase):
+class TestMotifFinding(TestCase):
 
     def setUp(self):
         self.set_up(py_path=__file__)
@@ -27,16 +27,7 @@ class TestPeakAnnotation(TestCase):
             f'{self.outdir}/macs2/narrow_peaks.narrowPeak',
         ]
 
-        PeakAnnotation(self.settings).main(
+        MotifFinding(self.settings).main(
             peak_files=peak_files,
             genome_version='hg38'
         )
-
-        annotated_files = [
-            f'{self.outdir}/homer/factor-peaks-annotated.txt',
-            f'{self.outdir}/homer/histone-regions-annotated.txt',
-            f'{self.outdir}/macs2/broad_peaks-annotated.broadPeak',
-            f'{self.outdir}/macs2/narrow_peaks-annotated.narrowPeak',
-        ]
-        for f in annotated_files:
-            self.assertTrue(exists(f))
