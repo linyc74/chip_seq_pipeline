@@ -107,8 +107,7 @@ class ChipSeqPipeline(Processor):
             control_fq1=self.control_fq1,
             control_fq2=self.control_fq2,
             read_aligner=self.read_aligner,
-            bowtie2_mode=self.bowtie2_mode,
-            discard_bam=self.discard_bam)
+            bowtie2_mode=self.bowtie2_mode)
 
     def mark_duplicates(self):
         if not self.skip_mark_duplicates:
@@ -140,14 +139,30 @@ class ChipSeqPipeline(Processor):
             fragment_size=self.motif_finding_fragment_size)
 
     def clean_up(self):
-        CleanUp(self.settings).main()
+        CleanUp(self.settings).main(
+            bams=[self.treatment_bam, self.control_bam],
+            discard_bam=self.discard_bam)
 
 
 class CleanUp(Processor):
 
-    def main(self):
+    bams: List[Optional[str]]
+    discard_bam: bool
+
+    def main(self, bams: List[Optional[str]], discard_bam: bool):
+        self.bams = bams
+        self.discard_bam = discard_bam
+        self.move_if_keep_bams()
         self.collect_log_files()
         self.remove_workdir()
+
+    def move_if_keep_bams(self):
+        keep_bams = not self.discard_bam
+        if keep_bams:
+            for bam in self.bams:
+                if bam is not None:
+                    dst = f'{self.outdir}/{os.path.basename(bam)}'
+                    self.call(f'mv {bam} {dst}')
 
     def collect_log_files(self):
         os.makedirs(f'{self.outdir}/log', exist_ok=True)

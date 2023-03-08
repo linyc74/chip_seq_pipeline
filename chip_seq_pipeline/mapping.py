@@ -15,7 +15,6 @@ class Mapping(Processor):
     control_fq2: Optional[str]
     read_aligner: str
     bowtie2_mode: str
-    discard_bam: bool
 
     treatment_bam: str
     control_bam: Optional[str]
@@ -28,8 +27,7 @@ class Mapping(Processor):
             control_fq1: Optional[str],
             control_fq2: Optional[str],
             read_aligner: str,
-            bowtie2_mode: str,
-            discard_bam: bool) -> Tuple[str, Optional[str]]:
+            bowtie2_mode: str) -> Tuple[str, Optional[str]]:
 
         self.ref_fa = ref_fa
         self.treatment_fq1 = treatment_fq1
@@ -38,7 +36,6 @@ class Mapping(Processor):
         self.control_fq2 = control_fq2
         self.read_aligner = read_aligner.lower()
         self.bowtie2_mode = bowtie2_mode.lower()
-        self.discard_bam = discard_bam
 
         assert self.read_aligner in ['bowtie2', 'bwa']
 
@@ -57,7 +54,6 @@ class Mapping(Processor):
             fq1=self.treatment_fq1,
             fq2=self.treatment_fq2,
             mode=self.bowtie2_mode,
-            discard_bam=self.discard_bam,
             sample_name=self.TREATMENT)
 
         if self.control_fq1 is None:
@@ -68,7 +64,6 @@ class Mapping(Processor):
                 fq1=self.control_fq1,
                 fq2=self.control_fq2,
                 mode=self.bowtie2_mode,
-                discard_bam=self.discard_bam,
                 sample_name=self.CONTROL)
 
     def run_bwa(self):
@@ -78,7 +73,6 @@ class Mapping(Processor):
             index=index,
             fq1=self.treatment_fq1,
             fq2=self.treatment_fq2,
-            discard_bam=self.discard_bam,
             sample_name=self.TREATMENT)
 
         if self.control_fq1 is None:
@@ -88,7 +82,6 @@ class Mapping(Processor):
                 index=index,
                 fq1=self.control_fq1,
                 fq2=self.control_fq2,
-                discard_bam=self.discard_bam,
                 sample_name=self.CONTROL)
 
 
@@ -134,7 +127,6 @@ class TemplateMapper(Processor):
     index: str
     fq1: str
     fq2: str
-    discard_bam: bool
     sample_name: str
 
     index: str
@@ -149,7 +141,6 @@ class TemplateMapper(Processor):
         self.sam_to_bam()
         self.sort_bam()
         self.mapping_stats()
-        self.move_if_keep_bam()
 
     def set_filenames(self):
         self.sam = f'{self.workdir}/mapped-{self.sample_name}.sam'
@@ -169,13 +160,6 @@ class TemplateMapper(Processor):
     def mapping_stats(self):
         self.call(f'samtools stats {self.sorted_bam} > {self.mapping_stats_txt}')
 
-    def move_if_keep_bam(self):
-        keep_bam = not self.discard_bam
-        if keep_bam:
-            dst = f'{self.outdir}/{basename(self.sorted_bam)}'
-            self.call(f'mv {self.sorted_bam} {dst}')
-            self.sorted_bam = dst
-
 
 class Bowtie2Mapper(TemplateMapper):
 
@@ -187,14 +171,12 @@ class Bowtie2Mapper(TemplateMapper):
             fq1: str,
             fq2: str,
             mode: str,
-            discard_bam: bool,
             sample_name: str) -> str:
 
         self.index = index
         self.fq1 = fq1
         self.fq2 = fq2
         self.mode = mode
-        self.discard_bam = discard_bam
         self.sample_name = sample_name
 
         self.run_workflow()
@@ -223,13 +205,11 @@ class BWAMapper(TemplateMapper):
             index: str,
             fq1: str,
             fq2: str,
-            discard_bam: bool,
             sample_name: str) -> str:
 
         self.index = index
         self.fq1 = fq1
         self.fq2 = fq2
-        self.discard_bam = discard_bam
         self.sample_name = sample_name
 
         self.run_workflow()

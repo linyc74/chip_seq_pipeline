@@ -19,7 +19,6 @@ class TestMapping(TestCase):
             control_fq2=f'{self.indir}/test_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bwa',
             bowtie2_mode='',
-            discard_bam=True
         )
         self.assertFileExists(f'{self.workdir}/sorted-treatment.bam', treatment_bam)
         self.assertFileExists(f'{self.workdir}/sorted-control.bam', control_bam)
@@ -33,7 +32,6 @@ class TestMapping(TestCase):
             control_fq2=f'{self.indir}/test_ATO_0_Input_S1_R2_001.fastq.gz',
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
-            discard_bam=False
         )
-        self.assertFileExists(f'{self.outdir}/sorted-treatment.bam', treatment_bam)
-        self.assertFileExists(f'{self.outdir}/sorted-control.bam', control_bam)
+        self.assertFileExists(f'{self.workdir}/sorted-treatment.bam', treatment_bam)
+        self.assertFileExists(f'{self.workdir}/sorted-control.bam', control_bam)
