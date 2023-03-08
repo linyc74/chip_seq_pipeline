@@ -3,6 +3,7 @@ from typing import Optional, List
 from .mapping import Mapping
 from .trimming import Trimming
 from .template import Processor
+from .bam2bigwig import Bam2BigWig
 from .peak_calling import PeakCalling
 from .motif_finding import MotifFinding
 from .peak_annotation import PeakAnnotation
@@ -83,6 +84,7 @@ class ChipSeqPipeline(Processor):
         self.trimming()
         self.mapping()
         self.mark_duplicates()
+        self.bam2bigwig()
         self.peak_calling()
         self.peak_annotation()
         self.motif_finding()
@@ -113,6 +115,11 @@ class ChipSeqPipeline(Processor):
             self.treatment_bam, self.control_bam = MarkDuplicates(self.settings).main(
                 treatment_bam=self.treatment_bam,
                 control_bam=self.control_bam)
+
+    def bam2bigwig(self):
+        Bam2BigWig(self.settings).main(
+            treatment_bam=self.treatment_bam,
+            control_bam=self.control_bam)
 
     def peak_calling(self):
         self.peak_files = PeakCalling(self.settings).main(

@@ -4,7 +4,7 @@ Create conda environment and install packages
 conda create -n chip-seq python=3
 conda activate chip-seq
 
-pip install pandas
+pip install pandas deeptools
 
 conda install -c bioconda macs2 bwa trim-galore samtools bowtie2 gatk4
 ```
