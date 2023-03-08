@@ -8,6 +8,7 @@ class TestPeakAnnotation(TestCase):
 
     def setUp(self):
         self.set_up(py_path=__file__)
+        self.settings.threads = 2  # to avoid memory overload
 
     def tearDown(self):
         self.tear_down()

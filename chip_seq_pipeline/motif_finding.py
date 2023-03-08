@@ -25,7 +25,7 @@ class MotifFinding(Processor):
         with Pool(self.threads) as p:
             p.map(self.find_motifs_genome, self.peak_files)
 
-    def find_motifs_genome(self, peak_file):
+    def find_motifs_genome(self, peak_file: str):
         time.sleep(random.random())  # to avoid concurrent log message
         FindMotifsGenome(self.settings).main(
             peak_file=peak_file,

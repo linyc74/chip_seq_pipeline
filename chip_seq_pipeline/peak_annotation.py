@@ -1,11 +1,12 @@
+import time
+import random
 from typing import List
 from os.path import basename
+from multiprocessing import Pool
 from .template import Processor
 
 
 class PeakAnnotation(Processor):
-
-    FNAME_SUFFIX = 'annotated.tsv'
 
     peak_files: List[str]
     genome_version: str
@@ -15,22 +16,46 @@ class PeakAnnotation(Processor):
         self.peak_files = peak_files
         self.genome_version = genome_version
 
-        for peak_file in self.peak_files:
-            self.annotate(peak_file)
+        with Pool(self.threads) as p:
+            p.map(self.anntotate_peaks, self.peak_files)
 
-    def annotate(self, peak_file: str):
-        output = self.__add_suffix_to_fname(peak_file)
-        log = f'{self.outdir}/annotatePeaks-[{basename(peak_file)}].log'
+    def anntotate_peaks(self, peak_file: str):
+        time.sleep(random.random())  # to avoid concurrent log message
+        AnnotatePeaks(self.settings).main(
+            peak_file=peak_file,
+            genome_version=self.genome_version)
+
+
+class AnnotatePeaks(Processor):
+
+    FNAME_SUFFIX = 'annotated.tsv'
+
+    peak_file: str
+    genome_version: str
+
+    out_file: str
+
+    def main(self, peak_file: str, genome_version: str) -> str:
+
+        self.peak_file = peak_file
+        self.genome_version = genome_version
+
+        self.set_out_file()
+        self.annotate()
+
+        return self.out_file
+
+    def set_out_file(self):
+        prefix = self.peak_file.rsplit('.', 1)[0]
+        self.out_file = f'{prefix}-{self.FNAME_SUFFIX}'
+
+    def annotate(self):
+        log = f'{self.outdir}/annotatePeaks-[{basename(self.peak_file)}].log'
         args = [
             'annotatePeaks.pl',
-            peak_file,
+            self.peak_file,
             self.genome_version,
-            f'1> {output}',
+            f'1> {self.out_file}',
             f'2> {log}',
         ]
         self.call(self.CMD_LINEBREAK.join(args))
-
-    def __add_suffix_to_fname(self, f: str) -> str:
-        p = f.rfind('.')
-        prefix = f[:p]
-        return f'{prefix}-{self.FNAME_SUFFIX}'
