@@ -16,15 +16,13 @@ class TestPeakAnnotation(TestCase):
     def test_main(self):
         self.__move_test_files_to_outdir()
 
-        peak_files = [
-            f'{self.outdir}/homer/factor-peaks.txt',
-            f'{self.outdir}/homer/histone-regions.txt',
-            f'{self.outdir}/macs2/broad-peaks.broadPeak',
-            f'{self.outdir}/macs2/narrow-peaks.narrowPeak',
-        ]
-
         PeakAnnotation(self.settings).main(
-            peak_files=peak_files,
+            peak_files=[
+                f'{self.outdir}/homer/factor-peaks.txt',
+                f'{self.outdir}/homer/histone-regions.txt',
+                f'{self.outdir}/macs2/broad-peaks.broadPeak',
+                f'{self.outdir}/macs2/narrow-peaks.narrowPeak',
+            ],
             genome_version='hg38'
         )
 

@@ -82,7 +82,8 @@ Update R to version 4.2.2.
 
 ```shell
 conda activate chip-seq
-conda install -c conda-forge r-base=4.2.2
+conda install -c conda-forge r-base=4.2.2  # try r-base=4 if 4.2.2 does not work
+conda install -c conda-forge r-curl  # libcurl is required for ChIPseeker compilation
 ```
 
 Enter the R console.
