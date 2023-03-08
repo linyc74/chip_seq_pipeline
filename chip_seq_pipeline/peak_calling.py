@@ -78,8 +78,8 @@ class MACS(Processor):
         self.call_broad_peaks()
 
         return [
-            f'{self.dstdir}/broad_peaks.broadPeak',
-            f'{self.dstdir}/narrow_peaks.narrowPeak'
+            f'{self.dstdir}/broad-peaks.broadPeak',
+            f'{self.dstdir}/narrow-peaks.narrowPeak'
         ]
 
     def set_base_args(self):

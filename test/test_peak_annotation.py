@@ -13,18 +13,13 @@ class TestPeakAnnotation(TestCase):
         self.tear_down()
 
     def test_main(self):
-        for d in ['homer', 'macs2']:
-            src = f'{self.indir}/{d}'
-            dst = f'{self.outdir}/{d}'
-            if exists(dst):
-                shutil.rmtree(dst)
-            shutil.copytree(src, dst)
+        self.__move_test_files_to_outdir()
 
         peak_files = [
             f'{self.outdir}/homer/factor-peaks.txt',
             f'{self.outdir}/homer/histone-regions.txt',
-            f'{self.outdir}/macs2/broad_peaks.broadPeak',
-            f'{self.outdir}/macs2/narrow_peaks.narrowPeak',
+            f'{self.outdir}/macs2/broad-peaks.broadPeak',
+            f'{self.outdir}/macs2/narrow-peaks.narrowPeak',
         ]
 
         PeakAnnotation(self.settings).main(
@@ -33,10 +28,18 @@ class TestPeakAnnotation(TestCase):
         )
 
         annotated_files = [
-            f'{self.outdir}/homer/factor-peaks-annotated.txt',
-            f'{self.outdir}/homer/histone-regions-annotated.txt',
-            f'{self.outdir}/macs2/broad_peaks-annotated.broadPeak',
-            f'{self.outdir}/macs2/narrow_peaks-annotated.narrowPeak',
+            f'{self.outdir}/homer/factor-peaks-annotated.tsv',
+            f'{self.outdir}/homer/histone-regions-annotated.tsv',
+            f'{self.outdir}/macs2/broad-peaks-annotated.tsv',
+            f'{self.outdir}/macs2/narrow-peaks-annotated.tsv',
         ]
         for f in annotated_files:
             self.assertTrue(exists(f))
+
+    def __move_test_files_to_outdir(self):
+        for d in ['homer', 'macs2']:
+            src = f'{self.indir}/{d}'
+            dst = f'{self.outdir}/{d}'
+            if exists(dst):
+                shutil.rmtree(dst)
+            shutil.copytree(src, dst)
