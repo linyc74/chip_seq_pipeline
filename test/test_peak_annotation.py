@@ -20,8 +20,8 @@ class TestPeakAnnotation(TestCase):
             peak_files=[
                 f'{self.outdir}/homer/factor-peaks.txt',
                 f'{self.outdir}/homer/histone-regions.txt',
-                f'{self.outdir}/macs2/broad-peaks.broadPeak',
-                f'{self.outdir}/macs2/narrow-peaks.narrowPeak',
+                f'{self.outdir}/macs2/broad_peaks.broadPeak',
+                f'{self.outdir}/macs2/narrow_peaks.narrowPeak',
             ],
             genome_version='hg38'
         )
@@ -29,8 +29,8 @@ class TestPeakAnnotation(TestCase):
         annotated_files = [
             f'{self.outdir}/homer/factor-peaks-annotated.tsv',
             f'{self.outdir}/homer/histone-regions-annotated.tsv',
-            f'{self.outdir}/macs2/broad-peaks-annotated.tsv',
-            f'{self.outdir}/macs2/narrow-peaks-annotated.tsv',
+            f'{self.outdir}/macs2/broad_peaks-annotated.tsv',
+            f'{self.outdir}/macs2/narrow_peaks-annotated.tsv',
         ]
         for f in annotated_files:
             self.assertTrue(exists(f))

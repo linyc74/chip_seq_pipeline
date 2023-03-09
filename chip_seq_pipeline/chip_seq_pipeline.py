@@ -4,6 +4,7 @@ from .mapping import Mapping
 from .trimming import Trimming
 from .template import Processor
 from .bam2bigwig import Bam2BigWig
+from .chipseeker import ChIPseeker
 from .peak_calling import PeakCalling
 from .motif_finding import MotifFinding
 from .peak_annotation import PeakAnnotation
@@ -88,6 +89,7 @@ class ChipSeqPipeline(Processor):
         self.peak_calling()
         self.peak_annotation()
         self.motif_finding()
+        self.chipseeker()
         self.clean_up()
 
     def trimming(self):
@@ -137,6 +139,10 @@ class ChipSeqPipeline(Processor):
             peak_files=self.peak_files,
             genome_version=self.genome_version,
             fragment_size=self.motif_finding_fragment_size)
+
+    def chipseeker(self):
+        ChIPseeker(self.settings).main(
+            peak_files=self.peak_files)
 
     def clean_up(self):
         CleanUp(self.settings).main(
