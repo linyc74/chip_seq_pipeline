@@ -83,32 +83,28 @@ Update R to version 4.2.2.
 ```shell
 conda activate chip-seq
 conda install -c conda-forge r-base=4.2.2  # try r-base=4 if 4.2.2 does not work
-conda install -c conda-forge r-curl  # libcurl is required for ChIPseeker compilation
+```
+
+There could be a few libraries required for ChIPseeker compilation.
+Here are some that I encountered, but different machines could vary.
+
+```shell
+conda install -c conda-forge r-curl
+conda install -c conda-forge r-rcppeigen
 ```
 
 Package config (`.pc`) files like `fontconfig.pc`, `freetype2.pc`, `libcurl.pc`
 need to be accessible through the `PKG_CONFIG_PATH` environment variable.
 These files are required for ChIPseeker compilation.
-There are two options:
 
 ```shell
-# 1) conda package config directory
 export PKG_CONFIG_PATH=$HOME/anaconda3/envs/chip-seq/lib/pkgconfig
-
-# 2) apt package config directory
-export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
-```
-
-Just a side note, `.pc` file can also be found by
-
-```shell
-apt-file search fontconfig.pc
 ```
 
 Enter the R console.
 
 ```shell
-sudo R
+R
 ```
 
 In the R console, install `ChIPseeker`.
