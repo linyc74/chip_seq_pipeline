@@ -82,15 +82,20 @@ Update R to version 4.2.2.
 
 ```shell
 conda activate chip-seq
-conda install -c conda-forge r-base=4.2.2  # try r-base=4 if 4.2.2 does not work
+conda install -c conda-forge r-base=4.2.2  # must be version 4.2.2
 ```
 
 There could be a few libraries required for ChIPseeker compilation.
 Here are some that I encountered, but different machines could vary.
 
 ```shell
+# Linux
 conda install -c conda-forge r-curl
 conda install -c conda-forge r-rcppeigen
+
+# Mac
+conda install -c conda-forge r-devtools
+conda install -c conda-forge r-textshaping
 ```
 
 Package config (`.pc`) files like `fontconfig.pc`, `freetype2.pc`, `libcurl.pc`
@@ -112,6 +117,9 @@ In the R console, install `ChIPseeker`.
 ```R
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
+
+# upgrade bioconductor to version 3.16, which depends on R 4.2.2
+BiocManager::install(version="3.16")
 
 BiocManager::install("ChIPseeker")
 ```
