@@ -32,6 +32,7 @@ class ChipSeqPipeline(Processor):
     macs_fdr: float
 
     genome_version: str
+    skip_motif_finding: bool
     motif_finding_fragment_size: int
 
     treatment_bam: str
@@ -59,6 +60,7 @@ class ChipSeqPipeline(Processor):
             macs_fdr: float,
 
             genome_version: str,
+            skip_motif_finding: bool,
             motif_finding_fragment_size: int):
 
         self.ref_fa = ref_fa
@@ -80,6 +82,7 @@ class ChipSeqPipeline(Processor):
         self.macs_fdr = macs_fdr
 
         self.genome_version = genome_version
+        self.skip_motif_finding = skip_motif_finding
         self.motif_finding_fragment_size = motif_finding_fragment_size
 
         self.trimming()
@@ -135,6 +138,8 @@ class ChipSeqPipeline(Processor):
             genome_version=self.genome_version)
 
     def motif_finding(self):
+        if self.skip_motif_finding:
+            return
         MotifFinding(self.settings).main(
             peak_files=self.peak_files,
             genome_version=self.genome_version,

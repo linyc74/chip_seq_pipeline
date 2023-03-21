@@ -153,6 +153,13 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['--skip-motif-finding'],
+        'properties': {
+            'action': 'store_true',
+            'help': 'skip motif finding',
+        }
+    },
+    {
         'keys': ['--motif-finding-fragment-size'],
         'properties': {
             'type': int,
@@ -254,6 +261,7 @@ class EntryPoint:
             macs_fdr=args.macs_fdr,
 
             genome_version=args.genome_version,
+            skip_motif_finding=args.skip_motif_finding,
             motif_finding_fragment_size=args.motif_finding_fragment_size,
 
             outdir=args.outdir,

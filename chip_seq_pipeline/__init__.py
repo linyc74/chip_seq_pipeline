@@ -24,6 +24,7 @@ def main(
         macs_fdr: float,
 
         genome_version: str,
+        skip_motif_finding: bool,
         motif_finding_fragment_size: int,
 
         outdir: str,
@@ -60,4 +61,5 @@ def main(
         macs_fdr=macs_fdr,
 
         genome_version=genome_version,
+        skip_motif_finding=skip_motif_finding,
         motif_finding_fragment_size=motif_finding_fragment_size)

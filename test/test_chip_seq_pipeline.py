@@ -32,6 +32,7 @@ class TestChipSeqPipeline(TestCase):
             macs_fdr=0.05,
 
             genome_version='hg38',
+            skip_motif_finding=False,
             motif_finding_fragment_size=20
         )
 
@@ -56,5 +57,6 @@ class TestChipSeqPipeline(TestCase):
             macs_fdr=0.05,
 
             genome_version='hg38',
+            skip_motif_finding=True,
             motif_finding_fragment_size=20
         )
